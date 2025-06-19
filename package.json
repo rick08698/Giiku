@@ -1,0 +1,29 @@
+{
+  "name": "giiku",
+  "version": "1.0.0",
+  "description": "技育ハッカソン6月Vol.5",
+  "main": "test_Node.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sotyan/Giiku.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sotyan/Giiku/issues"
+  },
+  "homepage": "https://github.com/sotyan/Giiku#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
