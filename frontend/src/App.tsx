@@ -7,16 +7,16 @@ function App() {
 
   return (
     <div id="example">
-      <div className='background-container'></div>
+      <img src='./night-sky5.jpg' className='background'/>
+      <img src='./kasei_syusei.png' className='alianimage' />
       <div className='foreground-content'>
-          <AddTaskButton
-              isSettingOpen={isSettingOpen}
-              setIsSettingOpen={setIsSettingOpen}
-          />
+        <AddTaskButton
+          isSettingOpen={isSettingOpen}
+          setIsSettingOpen={setIsSettingOpen}
+        />
       </div>
-      <div>
+      
 
-      </div>
     </div>
   )
 }

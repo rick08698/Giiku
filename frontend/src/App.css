@@ -1,30 +1,41 @@
 /* App.css */
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
   overflow: hidden;
 }
 
-#example{
- position: relative
+#example {
+  position: relative;
+  width: 100vw;
+  height: 100vh;   
+
 }
 
-.background-container {
+.background {
   position: absolute;
   width: 100vw;
   height: 100vh;
-  background-image: url('./assets/background.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 0;
+ 
+  z-index: 1;
 }
 
 .foreground-content {
   position: absolute;
-  z-index: 1;
-  bottom:20px;
-  right:20px;
+  z-index: 3;
+  bottom: 20px;
+  right: 20px;
 }
 
+.alianimage{
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  top:35vh;
+  bottom: 0;
+  left:0;
+}

@@ -21,6 +21,7 @@ function SettingScreen({ onClose }: SettingTaskProps) {
                 <p>終了日時
                     <input type="date" min={dateString} />
                 </p>
+                <button type='button'>追加</button>
                 <br />
                 <button onClick={onClose}>閉じる</button>
             </div>
