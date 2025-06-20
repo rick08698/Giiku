@@ -7,10 +7,11 @@ app.use(express.json());
 
 // ダミーのタスクデータ（サーバーを止めると消える）
 let tasks = [
-  { id: 1, title: '牛乳を買う', "deadline": "2025-07-31T15:00:00Z" , done: false },
-  { id: 2, title: 'Node.jsの勉強をする', "deadline": "2025-07-31T15:00:00Z" ,done: true },
-  { id: 3, title: '英語の勉強をする', "deadline": "2025-07-31T15:00:00Z" ,done: true },
-  { id: 4, title: '数学の勉強をする', "deadline": "2025-07-31T15:00:00Z" ,done: true },
+  { id: 1, title: '牛乳を買う', "deadline": "2025-07-31T15:00:00Z"},
+  { id: 2, title: 'Node.jsの勉強をする', "deadline": "2025-07-31T15:00:00Z" },
+  { id: 3, title: '英語の勉強をする', "deadline": "2025-07-31T15:00:00Z" },
+  { id: 4, title: '数学の勉強をする', "deadline": "2025-07-31T15:00:00Z" },
+  { id: 5, title: '歴史の勉強をする', "deadline": "2025-07-31T15:00:00Z" },
 ];
 
 // GET /tasks : 全てのタスクを一覧で取得する
