@@ -1,14 +1,16 @@
 import './App.css'
-import AddTaskButton from "./AddTaskButton.tsx"
+import AddTaskButton from "./addTaskButton"
 
 function App() {
 
   return (
-    <>
-      <div className='background-container'>
+    <div id="example">
+      <div className='background-container'></div>
+      <div className='foreground-content'>
+          <AddTaskButton/>
       </div>
-      <AddTaskButton/>
-    </>
+      
+    </div>
   )
 }
 
