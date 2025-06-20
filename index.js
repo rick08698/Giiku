@@ -1,16 +1,16 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 3001;
 
 // POSTリクエストのbody(JSON形式)を解析するための設定
 app.use(express.json());
 
 // ダミーのタスクデータ（サーバーを止めると消える）
 let tasks = [
-  { id: 1, title: '牛乳を買う', done: false },
-  { id: 2, title: 'Node.jsの勉強をする', done: true },
-  { id: 3, title: '英語の勉強をする', done: true },
-  { id: 4, title: '数学の勉強をする', done: true },
+  { id: 1, title: '牛乳を買う', "deadline": "2025-07-31T15:00:00Z" , done: false },
+  { id: 2, title: 'Node.jsの勉強をする', "deadline": "2025-07-31T15:00:00Z" ,done: true },
+  { id: 3, title: '英語の勉強をする', "deadline": "2025-07-31T15:00:00Z" ,done: true },
+  { id: 4, title: '数学の勉強をする', "deadline": "2025-07-31T15:00:00Z" ,done: true },
 ];
 
 // GET /tasks : 全てのタスクを一覧で取得する
