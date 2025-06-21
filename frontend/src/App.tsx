@@ -15,52 +15,15 @@ const API_URL = 'http://localhost:3001';
 
 function App() {
   const [isSettingOpen, setIsSettingOpen] = useState(false);
-<<<<<<< HEAD
-  const [tasks, setTasks] = useState<{id: string, title: string, deadline: string,x: number,y: number}[]>([]);
-=======
   const [tasks, setTasks] = useState<Task[]>([]);
   
   // ★★★ フォームの入力値をAppコンポーネントで一元管理 ★★★
   const [newTitle, setNewTitle] = useState('');
   const [newDeadline, setNewDeadline] = useState('');
->>>>>>> 02b81347be1aea11a3d1fae5fc7797fb87f9713b
 
   useEffect(() => {
-<<<<<<< HEAD
-      fetch('/tasks/', {method: 'GET'})
-      .then(res => res.json())
-      .then(data => {
-        const withPositions = data.map((task: any) => ({
-          ...task,
-          x: Math.random() * 80 + 10,
-          y: Math.random() * 80 + 10
-        }));
-        setTasks(withPositions)
-      }) 
-      .catch(error => {
-        console.error('Error fetching tasks:', error);
-        // テスト用データを格納（エラー時のフォールバック）
-        const X1 = Math.random() * 80 + 10;
-        const Y1 = Math.random() * 80 + 10;
-        const X2 = Math.random() * 80 + 10;
-        const Y2 = Math.random() * 80 + 10;
-        setTasks([
-          {id: "54379jln", title: "Task 1", deadline: "2023-01-01",x:X1,y:Y1}, 
-          {id: "5430jfls9", title: "Task 2", deadline: "2023-01-02",x:X2,y:Y2},
-        ]);
-      });
-=======
     fetchTasks();
->>>>>>> 02b81347be1aea11a3d1fae5fc7797fb87f9713b
   }, []);
-
-
-<<<<<<< HEAD
-  return (
-    <div id="example">
-      <img src='./night-sky5.jpg' className='background_back' />
-      <img src='./kasei_syusei.png' className='background_front' />
-=======
 
   const fetchTasks = async () => {
     try {
@@ -115,7 +78,6 @@ function App() {
     <div id="example">
       <img src='./night-sky5.jpg' className='background_back' alt="background" />
       <img src='./kasei_syusei.png' className='background_front' alt="foreground" />
->>>>>>> 02b81347be1aea11a3d1fae5fc7797fb87f9713b
       <div className='foreground-content'>
 
         {/* タスクオブジェクトの配列全体を渡す */}
