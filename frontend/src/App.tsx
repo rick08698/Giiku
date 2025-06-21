@@ -1,34 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import AddTaskButton from "./addTaskButton";
+import { useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const [tasks, setTasks] = useState<string[]>([]);
+
+  const handleAddTask = (task: string) => {
+    if(task.trim() !== ""){
+      setTasks([...tasks,task]);
+      setIsSettingOpen(false);
+    }
+  }
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div id="example">
+      <img src='./night-sky5.jpg' className='background_back'/>
+      <img src='./kasei_syusei.png' className='background_front' />
+      <div className='foreground-content'>
+        <AddTaskButton
+          isSettingOpen={isSettingOpen}
+          setIsSettingOpen={setIsSettingOpen}
+          onAddTask={handleAddTask}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      {tasks.length > 0 && <img src='./alian.png' className='alianImage' />}
+      
+      
+    </div>
   )
 }
 
