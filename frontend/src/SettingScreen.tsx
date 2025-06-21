@@ -1,35 +1,53 @@
+// SettingScreen.tsx
 import './temp.css';
-import {useState} from 'react';
 
+// 修正点　親(AddTaskButton経由)から受け取るpropsの型を更新
 type SettingTaskProps = {
     onClose: () => void;
-    onAddTask: (task: string) => void;
+    onAddTask: () => void;
+    title: string;
+    setTitle: (value: string) => void;
+    deadline: string;
+    setDeadline: (value: string) => void;
 };
 
-const today = new Date();
-const yyyy = today.getFullYear();
-const mm = String(today.getMonth() + 1).padStart(2, '0'); // 月は0始まりなので +1
-const dd = String(today.getDate()).padStart(2, '0');
+function SettingScreen(props: SettingTaskProps) {
+    // このコンポーネント内のローカルstateは不要なので削除
+    // const [taskInput, setTaskInput] = useState("");
 
-const dateString: string = `${yyyy}-${mm}-${dd}`; // → "2025-06-20"
-
-
-function SettingScreen({ onClose, onAddTask }: SettingTaskProps) {
-    const [taskInput, setTaskInput] = useState("");
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault(); // ページリロードを防ぐ
+        props.onAddTask();      // 親から渡された追加関数を呼び出す
+    }
 
     return (
         <div className="modal-overlay">
-            <div className="modal-content">
+            {/*  修正点: form要素で囲み、onSubmitイベントを利用する */}
+            <form className="modal-content" onSubmit={handleSubmit}>
                 <h2>タスク設定</h2>
-                <input type="text" placeholder="タスク内容を入力" value={taskInput} onChange={(e) => setTaskInput(e.target.value)}/>
+                <input 
+                  type="text"
+                  placeholder="タスク内容を入力"
+                  // 修正点: valueとonChangeをpropsに接続
+                  value={props.title}
+                  onChange={(e) => props.setTitle(e.target.value)}
+                  required
+                />
                 <br />
                 <p>終了日時
-                    <input type="date" min={dateString} />
+                    <input 
+                      type="datetime-local" // Appのstateに合わせる
+                      // 修正点: valueとonChangeをpropsに接続
+                      value={props.deadline}
+                      onChange={(e) => props.setDeadline(e.target.value)}
+                    />
                 </p>
-                <button type='button' onClick={() => onAddTask(taskInput)}>追加</button>
+                {/* 修正点: typeをsubmitに変更 */}
+                <button type='submit'>追加</button>
                 <br />
-                <button onClick={onClose}>閉じる</button>
-            </div>
+                {/* 閉じるボタンはformの外にあっても良い */}
+                <button type="button" onClick={props.onClose}>閉じる</button>
+            </form>
         </div>
     );
 }

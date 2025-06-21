@@ -1,35 +1,104 @@
+// App.tsx
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import AddTaskButton from "./addTaskButton";
-import { useState } from 'react';
+
+interface Task {
+  _id: string;
+  title: string;
+  deadline: string | null;
+}
+
+const API_URL = 'http://localhost:3001';
 
 function App() {
   const [isSettingOpen, setIsSettingOpen] = useState(false);
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  
+  // ★★★ フォームの入力値をAppコンポーネントで一元管理 ★★★
+  const [newTitle, setNewTitle] = useState('');
+  const [newDeadline, setNewDeadline] = useState('');
 
-  const handleAddTask = (task: string) => {
-    if(task.trim() !== ""){
-      setTasks([...tasks,task]);
-      setIsSettingOpen(false);
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = async () => {
+    try {
+      const response = await fetch(`${API_URL}/tasks`);
+      const data: Task[] = await response.json();
+      setTasks(data);
+    } catch (error) {
+      console.error('タスクの取得に失敗しました:', error);
     }
-  }
+  };
 
+  const handleAddTask = async () => {
+    if (newTitle.trim() === '') {
+      alert('タスクのタイトルを入力してください。');
+      return;
+    }
+    const newTask = {
+      title: newTitle,
+      deadline: newDeadline || null,
+    };
+    try {
+      const response = await fetch(`${API_URL}/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTask),
+      });
+      if (!response.ok) throw new Error('タスク追加に失敗');
+      setNewTitle('');
+      setNewDeadline('');
+      setIsSettingOpen(false);
+      await fetchTasks();
+    } catch (error) {
+      console.error('タスク追加処理でエラーが発生しました:', error);
+      alert('タスクの追加に失敗しました。');
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    if (!window.confirm('このタスク（エイリアン）を撃退しますか？')) return;
+    try {
+      const response = await fetch(`${API_URL}/tasks/${taskId}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('タスク削除に失敗');
+      await fetchTasks();
+    } catch (error) {
+      console.error('タスクの削除処理でエラーが発生しました:', error);
+    }
+  };
 
   return (
     <div id="example">
-      <img src='./night-sky5.jpg' className='background_back'/>
-      <img src='./kasei_syusei.png' className='background_front' />
+      <img src='./night-sky5.jpg' className='background_back' alt="background" />
+      <img src='./kasei_syusei.png' className='background_front' alt="foreground" />
       <div className='foreground-content'>
         <AddTaskButton
           isSettingOpen={isSettingOpen}
           setIsSettingOpen={setIsSettingOpen}
           onAddTask={handleAddTask}
+          // ★★★ Appが管理するstateと更新関数を子に渡す ★★★
+          title={newTitle}
+          setTitle={setNewTitle}
+          deadline={newDeadline}
+          setDeadline={setNewDeadline}
         />
       </div>
-      {tasks.length > 0 && <img src='./alian.png' className='alianImage' />}
-      
-      
+      <div className="alians-container">
+        {tasks.map((task) => (
+          <div key={task._id} className="alian-wrapper" onClick={() => handleDeleteTask(task._id)}>
+            <img src='./alian.png' className='alianImage' alt="alian" />
+            <div className="alian-tooltip">
+              <p>Title: {task.title}</p>
+              {task.deadline && <p>Deadline: {new Date(task.deadline).toLocaleDateString()}</p>}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
