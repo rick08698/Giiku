@@ -8,14 +8,13 @@ function App() {
   const [tasks, setTasks] = useState<{id: string, title: string, deadline: string}[]>([]);
 
 
-  // MongDBからタスクを取得する関数
-  useEffect(() => {
-      fetch('/tasks/', {method: 'GET'})
-      .then(res => res.json())
-      .then(data => {
-        setTasks(data)
-      }) 
-      .catch(error => {
+  const fetchTasks = () => {
+  fetch('/tasks/', {method: 'GET'})
+  .then(res => res.json())
+  .then(data => {
+    setTasks(data)
+  })
+  .catch(error => {
         console.error('Error fetching tasks:', error);
         // テスト用データを格納（エラー時のフォールバック）
         setTasks([
@@ -24,9 +23,29 @@ function App() {
           {id: "0739j999", title: "Task 3", deadline: "2023-01-03"}
         ]);
       });
+};
+
+  // 初回のみ実行
+  useEffect(() => {
+    fetchTasks();
   }, []);
 
-  console.log(tasks);
+
+  // タスクを削除する関数
+  const handleTaskDelete = async (taskId: string) => {
+    try {
+      // データベースから削除した後に、タスクを再度取得したい
+      // そのため、fetchTasksを呼び出して、タスクを取得する
+          // fetchTasks();
+      // ここではテスト的に、削除
+      // tasksからtaskIdに一致するタスクを削除。useStateでサイレンダリングされる
+      setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+      console.log(`タスク ${taskId} をローカルから削除しました`);
+    } catch (error) {
+      console.error(`タスク ${taskId} の削除中にエラーが発生しました:`, error);
+    }
+
+  }
 
 
   return (
@@ -35,7 +54,7 @@ function App() {
       <img src='./kasei_syusei.png' className='background_front' />
       <div className='foreground-content'>
         {/* タスクオブジェクトの配列全体を渡す */}
-        <PrintAlian tasks={tasks} />
+        <PrintAlian tasks={tasks} onTaskDelete={handleTaskDelete} />
       </div>
     </div>
   )
