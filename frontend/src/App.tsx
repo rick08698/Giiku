@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import AddTaskButton from "./addTaskButton";
-import PrintAlian from "./PrintAlian";
-
+import PrintAlian from "./PrintAlian"; // PrintAlianをインポート
 
 interface Task {
   _id: string;
@@ -16,16 +15,12 @@ const API_URL = 'http://localhost:3001';
 function App() {
   const [isSettingOpen, setIsSettingOpen] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
-  
-  // ★★★ フォームの入力値をAppコンポーネントで一元管理 ★★★
   const [newTitle, setNewTitle] = useState('');
   const [newDeadline, setNewDeadline] = useState('');
 
   useEffect(() => {
     fetchTasks();
   }, []);
-
-
 
   const fetchTasks = async () => {
     try {
@@ -37,16 +32,13 @@ function App() {
     }
   };
 
-
   const handleAddTask = async () => {
+    // (変更なし)
     if (newTitle.trim() === '') {
       alert('タスクのタイトルを入力してください。');
       return;
     }
-    const newTask = {
-      title: newTitle,
-      deadline: newDeadline || null,
-    };
+    const newTask = { title: newTitle, deadline: newDeadline || null };
     try {
       const response = await fetch(`${API_URL}/tasks`, {
         method: 'POST',
@@ -64,8 +56,8 @@ function App() {
     }
   };
 
-
   const handleDeleteTask = async (taskId: string) => {
+    // (変更なし)
     if (!window.confirm('このタスク（エイリアン）を撃退しますか？')) return;
     try {
       const response = await fetch(`${API_URL}/tasks/${taskId}`, { method: 'DELETE' });
@@ -80,35 +72,21 @@ function App() {
     <div id="example">
       <img src='./night-sky5.jpg' className='background_back' alt="background" />
       <img src='./kasei_syusei.png' className='background_front' alt="foreground" />
+      
+      {/* PrintAlianコンポーネントにtasks配列と削除関数を渡す */}
+      <PrintAlian tasks={tasks} onTaskDelete={handleDeleteTask} />
+
       <div className='foreground-content'>
-
-        {/* タスクオブジェクトの配列全体を渡す */}
-        <PrintAlian tasks={tasks} onTaskDelete={handleDeleteTask} />
-
         <AddTaskButton
           isSettingOpen={isSettingOpen}
           setIsSettingOpen={setIsSettingOpen}
           onAddTask={handleAddTask}
-          // ★★★ Appが管理するstateと更新関数を子に渡す ★★★
           title={newTitle}
           setTitle={setNewTitle}
           deadline={newDeadline}
           setDeadline={setNewDeadline}
         />
-
       </div>
-      <div className="alians-container">
-        {tasks.map((task) => (
-          <div key={task._id} className="alian-wrapper" onClick={() => handleDeleteTask(task._id)}>
-            <img src='./alian.png' className='alianImage' alt="alian" />
-            <div className="alian-tooltip">
-              <p>Title: {task.title}</p>
-              {task.deadline && <p>Deadline: {new Date(task.deadline).toLocaleDateString()}</p>}
-            </div>
-          </div>
-        ))}
-      </div>
-
     </div>
   );
 }
