@@ -24,6 +24,8 @@ function App() {
     fetchTasks();
   }, []);
 
+
+
   const fetchTasks = async () => {
     try {
       const response = await fetch(`${API_URL}/tasks`);
@@ -33,6 +35,7 @@ function App() {
       console.error('タスクの取得に失敗しました:', error);
     }
   };
+
 
   const handleAddTask = async () => {
     if (newTitle.trim() === '') {
@@ -77,6 +80,10 @@ function App() {
       <img src='./night-sky5.jpg' className='background_back' alt="background" />
       <img src='./kasei_syusei.png' className='background_front' alt="foreground" />
       <div className='foreground-content'>
+
+        {/* タスクオブジェクトの配列全体を渡す */}
+        <PrintAlian tasks={tasks} onTaskDelete={handleTaskDelete} />
+
         <AddTaskButton
           isSettingOpen={isSettingOpen}
           setIsSettingOpen={setIsSettingOpen}
@@ -87,6 +94,7 @@ function App() {
           deadline={newDeadline}
           setDeadline={setNewDeadline}
         />
+
       </div>
       <div className="alians-container">
         {tasks.map((task) => (
