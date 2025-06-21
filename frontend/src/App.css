@@ -14,7 +14,7 @@ body {
 
 }
 
-.background {
+.background_back {
   position: absolute;
   width: 100vw;
   height: 100vh;
@@ -24,18 +24,27 @@ body {
 
 .foreground-content {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   bottom: 20px;
   right: 20px;
 }
 
-.alianimage{
+.background_front{
   position: absolute;
   z-index: 2;
   width: 100%;
-  height: auto;
+  
   object-fit: cover;
-  top:35vh;
+  top:30vh;
   bottom: 0;
   left:0;
+}
+
+.alianImage{
+  position: absolute;
+  z-index: 3;
+  width:100px;
+  height:100px;
+  bottom: 150px;
+  right: 100px;
 }
