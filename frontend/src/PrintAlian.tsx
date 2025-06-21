@@ -2,11 +2,11 @@ import './PrintAlian.css';
 import App from './App';
 import { useState } from 'react';
 
-type Task = {
-  id: string;
+interface Task {
+  _id: string;
   title: string;
-  deadline: string;
-};
+  deadline: string | null;
+}
 
 type PrintAlianProps = {
   tasks: Task[];
@@ -18,9 +18,9 @@ function PrintAlian({ tasks, onTaskDelete }: PrintAlianProps) {
 
   // 画像クリック時の処理
   const handleImageClick = (task: Task) => {
-    console.log(`タスク ${task.id} がクリックされました:`, task);
+    console.log(`タスク ${task._id} がクリックされました:`, task);
     if (onTaskDelete) {
-      onTaskDelete(task.id);
+      onTaskDelete(task._id);
     }
   };
 
@@ -29,7 +29,7 @@ function PrintAlian({ tasks, onTaskDelete }: PrintAlianProps) {
       {tasks.map((task) => (
         // 画像をクリックした時の処理が呼び出される
         <div 
-          key={task.id} 
+          key={task._id} 
           onClick={() => handleImageClick(task)}
         >
           {/* 画像、タスク情報を表示 */}

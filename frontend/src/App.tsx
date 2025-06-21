@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import AddTaskButton from "./addTaskButton";
+import PrintAlian from "./PrintAlian";
 
 
 interface Task {
@@ -82,7 +83,7 @@ function App() {
       <div className='foreground-content'>
 
         {/* タスクオブジェクトの配列全体を渡す */}
-        <PrintAlian tasks={tasks} onTaskDelete={handleTaskDelete} />
+        <PrintAlian tasks={tasks} onTaskDelete={handleDeleteTask} />
 
         <AddTaskButton
           isSettingOpen={isSettingOpen}
