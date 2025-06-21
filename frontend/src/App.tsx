@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import AddTaskButton from "./addTaskButton";
 
+
 interface Task {
   _id: string;
   title: string;
@@ -59,6 +60,7 @@ function App() {
     }
   };
 
+
   const handleDeleteTask = async (taskId: string) => {
     if (!window.confirm('このタスク（エイリアン）を撃退しますか？')) return;
     try {
@@ -97,6 +99,7 @@ function App() {
           </div>
         ))}
       </div>
+
     </div>
   );
 }
