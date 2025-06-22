@@ -31,7 +31,6 @@ const getUrgency = (deadline: string | null) => {
   const deadlineDate = new Date(deadline);
   const diffHours = (deadlineDate.getTime() - now.getTime()) / (1000 * 60 * 60);
 
-  // 期限切れ判定を追加
   if (diffHours < 0) return URGENCY_INFO.EXPIRED;
   if (diffHours <= 24 && diffHours >= 0) return URGENCY_INFO.URGENT;
   if (diffHours <= 72 && diffHours >= 0) return URGENCY_INFO.WARNING;
@@ -39,70 +38,42 @@ const getUrgency = (deadline: string | null) => {
 };
 
 function PrintAlian({ tasks, onTaskDelete }: PrintAlianProps) {
-  // ★★★ 各タスクのランダムな位置を保持するためのstate ★★★
   const [positions, setPositions] = useState<Map<string, { top: string; left: string }>>(new Map());
   
-  // ★★★ 背景動画表示用のstate ★★★
-  const [showExpiredBackground, setShowExpiredBackground] = useState(false);
-  const [isVideoMuted, setIsVideoMuted] = useState(true); // ミュート状態を管理
+  // ▼▼▼ stateの変更 ▼▼▼
+  // showExpiredBackground の代わりに、動画ソースのパスを管理する
+  const [videoSrc, setVideoSrc] = useState('./normal-video.mp4'); // ★通常時の動画をデフォルトに設定
+  const [isVideoMuted, setIsVideoMuted] = useState(true);
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
 
-  // ★★★ 期限切れタスクをチェックする関数 ★★★
   const checkExpiredTasks = () => {
-    const expiredTasks = tasks.filter(task => getUrgency(task.deadline).level === 4);
-    return expiredTasks.length > 0;
+    return tasks.some(task => getUrgency(task.deadline).level === 4);
   };
 
-  // ★★★ 期限切れタスクがある場合の背景動画再生処理 ★★★
+  // ▼▼▼ useEffectのロジックを修正 ▼▼▼
+  // tasksが変更されるたびに、再生すべき動画ソースを決定する
   useEffect(() => {
-    const hasExpiredTasks = checkExpiredTasks();
-    
-    if (hasExpiredTasks && !showExpiredBackground) {
-      console.log('期限切れタスクが検出されました。背景動画を再生します。');
-      setShowExpiredBackground(true);
-      
-      // 背景動画を自動再生（ミュートで開始）
-      setTimeout(() => {
-        if (backgroundVideoRef.current) {
-          backgroundVideoRef.current.muted = true; // 確実にミュートに設定
-          backgroundVideoRef.current.play()
-            .then(() => {
-              console.log('背景動画の再生が開始されました');
-            })
-            .catch(error => {
-              console.log('背景動画の自動再生に失敗しました:', error);
-              // フォールバック: ユーザーのクリックを待つ
-              console.log('ユーザーの操作後に動画を再生します');
-            });
-        }
-      }, 100);
-    } else if (!hasExpiredTasks && showExpiredBackground) {
-      // 期限切れタスクがなくなったら背景動画を停止
-      console.log('期限切れタスクがなくなりました。背景動画を停止します。');
-      setShowExpiredBackground(false);
-      if (backgroundVideoRef.current) {
-        backgroundVideoRef.current.pause();
-        backgroundVideoRef.current.currentTime = 0;
-      }
-    }
-  }, [tasks, showExpiredBackground]);
+    const hasExpired = checkExpiredTasks();
+    const newSrc = hasExpired ? './expired-warning.mp4' : './normal-video.mp4';
 
-  // ★★★ 背景動画が終了した時の処理（ループ再生） ★★★
+    // 現在再生中の動画ソースと異なる場合のみ、ソースを更新して再読み込み
+    if (newSrc !== videoSrc) {
+      setVideoSrc(newSrc);
+    }
+  }, [tasks, videoSrc]);
+
   const handleBackgroundVideoEnd = () => {
-    console.log('背景動画が終了しました。ループ再生します。');
-    if (backgroundVideoRef.current && showExpiredBackground) {
+    if (backgroundVideoRef.current) {
       backgroundVideoRef.current.currentTime = 0;
       backgroundVideoRef.current.play();
     }
   };
 
-  // ★★★ 音声のオン/オフを切り替える関数 ★★★
   const toggleVideoSound = () => {
     if (backgroundVideoRef.current) {
       const newMutedState = !isVideoMuted;
       backgroundVideoRef.current.muted = newMutedState;
       setIsVideoMuted(newMutedState);
-      console.log(`動画の音声を${newMutedState ? 'オフ' : 'オン'}にしました`);
     }
   };
 
@@ -112,18 +83,15 @@ function PrintAlian({ tasks, onTaskDelete }: PrintAlianProps) {
       const newPositions = new Map(currentPositions);
       let hasChanged = false;
 
-      // 新しいタスクに対してのみ、新しい位置を生成
       tasks.forEach(task => {
         if (!newPositions.has(task._id)) {
-          // 画面の端に行き過ぎないように、10%〜90%の範囲でランダムな値を生成
-          const top = `${Math.random() * 60 + 10}%`; // Y座標は上半分に集中させる
-          const left = `${Math.random() * 80 + 10}%`; // X座標
+          const top = `${Math.random() * 60 + 10}%`;
+          const left = `${Math.random() * 80 + 10}%`;
           newPositions.set(task._id, { top, left });
           hasChanged = true;
         }
       });
 
-      // 削除されたタスクの位置情報をクリーンアップ
       currentPositions.forEach((_, key) => {
         if (!tasks.some(task => task._id === key)) {
           newPositions.delete(key);
@@ -135,42 +103,41 @@ function PrintAlian({ tasks, onTaskDelete }: PrintAlianProps) {
     });
   }, [tasks]);
 
-  // 緊急度順に並び替え（緊急なものが手前に来るように）
   const sortedTasks = [...tasks].sort((a, b) => {
     return getUrgency(a.deadline).level - getUrgency(b.deadline).level;
   });
 
   return (
     <div className="aliens-random-container">
-      {/* ★★★ 期限切れ時の背景動画 ★★★ */}
-      {showExpiredBackground && (
-        <div className="expired-background-video">
-          <video
-            ref={backgroundVideoRef}
-            className="background-video"
-            onEnded={handleBackgroundVideoEnd}
-            muted={isVideoMuted} // ミュート状態を反映
-            playsInline
-            autoPlay // autoPlay属性を追加
-            loop // ループ再生を有効
-          >
-            <source src="./expired-warning.mp4" type="video/mp4" />
-            お使いのブラウザは動画再生をサポートしていません。
-          </video>
-          {/* 背景動画の上に薄いオーバーレイを追加（宇宙人が見やすくなるように） */}
-          <div className="video-overlay"></div>
-        </div>
-      )}
+      {/* ▼▼▼ レンダリング部分の修正 ▼▼▼ */}
+      {/* 常にビデオコンテナを表示し、再生する動画を動的に切り替える */}
+      <div className="expired-background-video">
+        <video
+          ref={backgroundVideoRef}
+          // keyにvideoSrcを指定することで、ソースが切り替わった際にビデオ要素が再生成され、自動再生が確実になります
+          key={videoSrc}
+          className="background-video"
+          onEnded={handleBackgroundVideoEnd}
+          muted={isVideoMuted}
+          playsInline
+          autoPlay
+          loop
+        >
+          {/* sourceのsrcをstateに紐付ける */}
+          <source src={videoSrc} type="video/mp4" />
+          お使いのブラウザは動画再生をサポートしていません。
+        </video>
+        <div className="video-overlay"></div>
+      </div>
 
-      {/* ★★★ 期限切れ警告メッセージ ★★★ */}
-      {showExpiredBackground && (
+      {/* 警告メッセージとボタンは、警告動画が再生されている時だけ表示する */}
+      {videoSrc === './expired-warning.mp4' && (
         <div className="expired-warning-message">
           <div className="warning-text">
             ⚠️ 期限切れのタスクがあります！ ⚠️
             <br />
             火星人たちが迫ってきています。
           </div>
-          {/* 音声コントロールボタンを追加 */}
           <button 
             className="sound-toggle-btn"
             onClick={toggleVideoSound}
@@ -180,7 +147,7 @@ function PrintAlian({ tasks, onTaskDelete }: PrintAlianProps) {
         </div>
       )}
 
-      {/* ★★★ エイリアン表示（背景動画の上に表示） ★★★ */}
+      {/* エイリアン表示 */}
       {sortedTasks.map(task => {
         const position = positions.get(task._id);
         if (!position) return null;
