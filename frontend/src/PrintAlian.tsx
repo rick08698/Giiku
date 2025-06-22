@@ -199,7 +199,7 @@ function PrintAlian({ tasks, onTaskDelete }: PrintAlianProps) {
               <div className="task-title">{task.title}</div>
               {task.deadline && (
                 <div className="task-deadline">
-                  期限: {new Date(task.deadline).toLocaleDateString()}
+                  期限: {new Date(task.deadline).toLocaleString()}
                 </div>
               )}
               {urgency.level === 4 && (

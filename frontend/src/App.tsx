@@ -1,9 +1,10 @@
 // App.tsx
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import AddTaskButton from "./addTaskButton";
+// import AddTaskButton from "./addTaskButton"; // 不要になるため削除
 import PrintAlian from "./PrintAlian";
-import TaskListModal from './TaskListModal'; // ★★★ 新しくインポート ★★★
+// import TaskListModal from './TaskListModal'; // 不要になるため削除
+import TaskManager from './TaskManager'; // ★ 新しいコンポーネントをインポート
 
 interface Task {
   _id: string;
@@ -14,15 +15,13 @@ interface Task {
 const API_URL = 'http://localhost:3001';
 
 function App() {
-  const [isSettingOpen, setIsSettingOpen] = useState(false);
-  // ★★★ 追加: タスク一覧モーダルの表示状態を管理するstate ★★★
-  const [isListOpen, setIsListOpen] = useState(false);
+  // ▼▼▼ Stateを統合 ▼▼▼
+  const [isTaskManagerOpen, setIsTaskManagerOpen] = useState(false);
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTitle, setNewTitle] = useState('');
   const [newDeadline, setNewDeadline] = useState('');
 
-  // ... (useEffect, fetchTasks, handleAddTask, handleDeleteTask のロジックは変更なし) ...
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -50,9 +49,11 @@ function App() {
         body: JSON.stringify(newTask),
       });
       if (!response.ok) throw new Error('タスク追加に失敗');
+      // フォームをリセット
       setNewTitle('');
       setNewDeadline('');
-      setIsSettingOpen(false);
+      // TaskManagerは閉じずにタスクリストが更新されるようにしても良い
+      // setIsTaskManagerOpen(false); 
       await fetchTasks();
     } catch (error) {
       console.error('タスク追加処理でエラーが発生しました:', error);
@@ -61,8 +62,6 @@ function App() {
   };
 
   const handleDeleteTask = async (taskId: string) => {
-    // 削除確認はPrintAlian側でやっても良い
-    // if (!window.confirm('このタスク（エイリアン）を撃退しますか？')) return;
     try {
       const response = await fetch(`${API_URL}/tasks/${taskId}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('タスク削除に失敗');
@@ -72,8 +71,6 @@ function App() {
     }
   };
 
-// App.tsx の return 部分
-
   return (
     <div id="example">
       <img src='./night-sky5.jpg' className='background_back' alt="background" />
@@ -81,28 +78,25 @@ function App() {
       
       <PrintAlian tasks={tasks} onTaskDelete={handleDeleteTask} />
 
-      {/* ★★★ 変更点: ボタンを別々のコンテナに配置 ★★★ */}
-
-      {/* 左下のボタン用コンテナ */}
-      <div className='bottom-left-controls'>
-        <button className='control-button' onClick={() => setIsListOpen(true)}>タスク一覧</button>
+      {/* ▼▼▼ ボタンコンテナを中央に統合 ▼▼▼ */}
+      <div className='bottom-center-controls'>
+        <button className='control-button' onClick={() => setIsTaskManagerOpen(true)}>
+          タスク一覧/タスク追加
+        </button>
       </div>
 
-      {/* 右下のボタン用コンテナ */}
-      <div className='bottom-right-controls'>
-        <AddTaskButton
-          isSettingOpen={isSettingOpen}
-          setIsSettingOpen={setIsSettingOpen}
+      {/* ▼▼▼ 新しいTaskManagerコンポーネントを呼び出し ▼▼▼ */}
+      {isTaskManagerOpen && (
+        <TaskManager
+          tasks={tasks}
+          onClose={() => setIsTaskManagerOpen(false)}
           onAddTask={handleAddTask}
           title={newTitle}
           setTitle={setNewTitle}
           deadline={newDeadline}
           setDeadline={setNewDeadline}
         />
-      </div>
-
-      {/* モーダルの表示ロジックは変更なし */}
-      {isListOpen && <TaskListModal tasks={tasks} onClose={() => setIsListOpen(false)} />}
+      )}
     </div>
   );
 }

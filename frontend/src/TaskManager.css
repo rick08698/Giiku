@@ -1,0 +1,146 @@
+/* TaskManager.css */
+.task-manager-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end; /* コンテナを下部に配置 */
+}
+
+.task-manager-container {
+  background-color: #282c34;
+  color: white;
+  width: 100%;
+  max-height: 60vh; /* 高さを画面の60%に制限 */
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  box-sizing: border-box;
+  animation: slide-up 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.task-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #444;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  flex-shrink: 0; /* ヘッダーが縮まないようにする */
+}
+
+.task-manager-header h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2em;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 10px;
+}
+
+.task-manager-content {
+  display: flex;
+  gap: 30px;
+  flex-grow: 1;
+  overflow: hidden; /* 親コンテナで overflow を hidden に */
+}
+
+.task-list-section, .task-add-section {
+  flex: 1;
+  overflow-y: auto; /* 各セクションで独立してスクロール */
+  padding-right: 10px; /* スクロールバーのための余白 */
+}
+
+.task-list-section h3, .task-add-section h3 {
+  margin-top: 0;
+  color: #61dafb;
+}
+
+/* タスク一覧のスタイル */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 5px;
+  border-bottom: 1px solid #444;
+}
+
+.task-list .task-title {
+  font-weight: bold;
+  margin-right: 15px;
+  word-break: break-all;
+}
+
+.task-list .task-deadline {
+  font-size: 0.9em;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+/* タスク追加フォームのスタイル */
+.task-add-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.task-add-section input[type="text"],
+.task-add-section input[type="datetime-local"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #333;
+  color: white;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.task-add-section p {
+    margin: 0 0 5px 0;
+    font-size: 0.9em;
+}
+
+.add-task-button {
+  padding: 12px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #61dafb;
+  color: #282c34;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 1em;
+}
+
+.add-task-button:hover {
+  background-color: #21a1f2;
+}

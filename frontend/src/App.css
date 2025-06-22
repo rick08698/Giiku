@@ -40,24 +40,19 @@ body {
   left:0;
 }
 
-/* 左下のボタン用コンテナのスタイル */
-.bottom-left-controls {
+/* ▼▼▼ 左右のコンテナスタイルを削除 ▼▼▼ */
+/* .bottom-left-controls, .bottom-right-controls は削除 */
+
+/* ★★★ 中央のボタン用コンテナのスタイルを追加 ★★★ */
+.bottom-center-controls {
   position: absolute;
-  z-index: 10; /* エイリアンより手前に表示 */
+  z-index: 10;
   bottom: 20px;
-  left: 20px;   /* 画面の左端から20pxの位置 */
+  left: 50%;
+  transform: translateX(-50%); /* 要素を正確に中央揃えするテクニック */
 }
 
-/* 右下のボタン用コンテナのスタイル */
-.bottom-right-controls {
-  position: absolute;
-  z-index: 10; /* エイリアンより手前に表示 */
-  bottom: 20px;
-  right: 20px;  /* 画面の右端から20pxの位置 */
-}
-
-
-/* 共有ボタンのスタイル (addTaskButtonのスタイルと合わせる) */
+/* 共有ボタンのスタイル */
 .control-button {
   display: inline-block;
   font-size: 16px;
