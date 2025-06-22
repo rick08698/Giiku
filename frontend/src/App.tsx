@@ -58,7 +58,6 @@ function App() {
 
   const handleDeleteTask = async (taskId: string) => {
     // (変更なし)
-    if (!window.confirm('このタスク（エイリアン）を撃退しますか？')) return;
     try {
       const response = await fetch(`${API_URL}/tasks/${taskId}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('タスク削除に失敗');
