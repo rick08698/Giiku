@@ -39,3 +39,39 @@ body {
   bottom: 0;
   left:0;
 }
+
+/* 左下のボタン用コンテナのスタイル */
+.bottom-left-controls {
+  position: absolute;
+  z-index: 10; /* エイリアンより手前に表示 */
+  bottom: 20px;
+  left: 20px;   /* 画面の左端から20pxの位置 */
+}
+
+/* 右下のボタン用コンテナのスタイル */
+.bottom-right-controls {
+  position: absolute;
+  z-index: 10; /* エイリアンより手前に表示 */
+  bottom: 20px;
+  right: 20px;  /* 画面の右端から20pxの位置 */
+}
+
+
+/* 共有ボタンのスタイル (addTaskButtonのスタイルと合わせる) */
+.control-button {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 9999px;
+  border: 1px solid #999;
+  padding: 1rem 2rem;
+  color: #fff;
+  background-color: #333;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.control-button:hover {
+  opacity: 0.7;
+}

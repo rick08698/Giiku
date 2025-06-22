@@ -1,0 +1,24 @@
+/* TaskListModal.css */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  max-height: 300px; /* リストが長くなったらスクロール */
+  overflow-y: auto;
+}
+
+.task-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 5px;
+  border-bottom: 1px solid #444;
+}
+
+.task-list .task-title {
+  font-weight: bold;
+}
+
+.task-list .task-deadline {
+  font-size: 0.9em;
+  color: #aaa;
+}
