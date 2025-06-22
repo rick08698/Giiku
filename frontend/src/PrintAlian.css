@@ -17,12 +17,13 @@
   cursor: pointer;
   transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
   pointer-events: auto; /* エイリアンはクリック可能に */
+  z-index: 100; /* 背景動画より手前に表示 */
 }
 
 .alien-random-wrapper:hover {
   /* ホバー時にさらに少し大きくして、最前面に表示 */
   transform: scale(1.5) !important; 
-  z-index: 100 !important;
+  z-index: 200 !important;
 }
 
 .alien-random-wrapper .alianImage {
@@ -34,23 +35,129 @@
 
 /* 緊急 (1日以内) */
 .urgency-urgent {
-  width: 120px; /* 大きいサイズ */
-  z-index: 30;
+  width: 180px; /* 大きいサイズ */
+  z-index: 130;
   filter: drop-shadow(0 0 15px red);
 }
 
 /* 警告 (3日以内) */
 .urgency-warning {
-  width: 90px; /* 中くらいのサイズ */
-  z-index: 20;
+  width: 130px; /* 中くらいのサイズ */
+  z-index: 120;
   filter: drop-shadow(0 0 12px yellow);
 }
 
 /* 通常 */
 .urgency-normal {
-  width: 60px; /* 小さいサイズ */
-  z-index: 10;
+  width: 100px; /* 小さいサイズ */
+  z-index: 110;
   filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+}
+
+/* ★★★ 期限切れ ★★★ */
+.urgency-expired {
+  width: 200px; /* 期限切れは最大サイズ */
+  z-index: 140;
+  filter: drop-shadow(0 0 20px darkred) grayscale(50%);
+  animation: expired-pulse 1s infinite;
+}
+
+@keyframes expired-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    filter: drop-shadow(0 0 20px darkred) grayscale(50%);
+  }
+  50% { 
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 30px red) grayscale(30%);
+  }
+}
+
+/* ★★★ 期限切れ時の背景動画 ★★★ */
+.expired-background-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1; /* 背景として表示 */
+  overflow: hidden;
+}
+
+.background-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 画面全体をカバー */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* 背景動画の上に薄いオーバーレイ（宇宙人を見やすくするため） */
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* 薄い黒のオーバーレイ */
+  z-index: 2;
+}
+
+/* ★★★ 期限切れ警告メッセージ ★★★ */
+.expired-warning-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 150;
+  pointer-events: none; /* クリックを通す */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.warning-text {
+  background-color: rgba(255, 0, 0, 0.9);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+  animation: warning-pulse 2s infinite;
+  border: 2px solid #ff6b6b;
+}
+
+/* 音声切り替えボタン */
+.sound-toggle-btn {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: 2px solid #ff6b6b;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: auto; /* ボタンはクリック可能 */
+}
+
+.sound-toggle-btn:hover {
+  background-color: rgba(255, 107, 107, 0.8);
+  transform: scale(1.05);
+}
+
+@keyframes warning-pulse {
+  0%, 100% { 
+    background-color: rgba(255, 0, 0, 0.9);
+    transform: scale(1);
+  }
+  50% { 
+    background-color: rgba(255, 50, 50, 1);
+    transform: scale(1.05);
+  }
 }
 
 /* ツールチップのスタイル */
@@ -61,7 +168,7 @@
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.9);
   color: white;
   padding: 8px;
   border-radius: 6px;
@@ -70,6 +177,7 @@
   max-width: 200px;
   transition: visibility 0s, opacity 0.2s linear;
   white-space: nowrap;
+  z-index: 300; /* ツールチップは最前面 */
 }
 
 .alien-random-wrapper:hover .task-info-tooltip {
@@ -80,4 +188,14 @@
 .task-info-tooltip .task-title {
   font-weight: bold;
   margin-bottom: 4px;
+}
+
+.expired-label {
+  color: #ff4444;
+  font-weight: bold;
+  font-size: 12px;
+  background-color: rgba(255, 0, 0, 0.8);
+  padding: 2px 4px;
+  border-radius: 3px;
+  margin-top: 4px;
 }
